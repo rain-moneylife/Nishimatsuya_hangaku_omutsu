@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>オムツほぼ半額チェックシート</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+:root{
+  --blue-dark:#1a4a7a;
+  --blue-mid:#2d6db5;
+  --blue-light:#5b9bd5;
+  --blue-pale:#e8f3fc;
+  --blue-ultra:#f0f7ff;
+  --accent-red:#e03a3a;
+  --accent-yellow:#f5a623;
+  --accent-green:#27ae60;
+  --accent-pink:#ff6b9d;
+  --text-dark:#1a2a3a;
+  --text-mid:#4a5a6a;
+  --text-light:#7a8a9a;
+  --border:#c8ddef;
+  --white:#ffffff;
+  --shadow:0 2px 12px rgba(26,74,122,0.1);
+  --shadow-hover:0 6px 24px rgba(26,74,122,0.18);
+}
+
+body{
+  font-family:'Noto Sans JP',sans-serif;
+  background:linear-gradient(135deg,#e8f3fc 0%,#f0f7ff 50%,#e0eef8 100%);
+  min-height:100vh;
+  padding:16px;
+  color:var(--text-dark);
+}
+
+.page-header{
+  background:linear-gradient(135deg,var(--blue-dark) 0%,var(--blue-mid) 100%);
+  border-radius:20px;
+  padding:24px 20px;
+  margin-bottom:20px;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 8px 32px rgba(26,74,122,0.3);
+}
+.page-header::before{
+  content:'';
+  position:absolute;
+  top:-10px;right:10px;
+  font-size:80px;
+  opacity:0.15;
+}
+.page-header::after{
+  content:'🛒';
+  position:absolute;
+  bottom:-10px;left:10px;
+  font-size:60px;
+  opacity:0.15;
+}
+.header-badge{
+  display:inline-block;
+  background:var(--accent-yellow);
+  color:var(--blue-dark);
+  font-size:11px;
+  font-weight:700;
+  padding:3px 10px;
+  border-radius:20px;
+  margin-bottom:8px;
+}
+.page-header h1{
+  color:var(--white);
+  font-size:20px;
+  font-weight:900;
+  line-height:1.3;
+  margin-bottom:6px;
+}
+.page-header p{
+  color:rgba(255,255,255,0.85);
+  font-size:12px;
+  line-height:1.5;
+}
+.total-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:rgba(255,255,255,0.15);
+  border:1px solid rgba(255,255,255,0.3);
+  border-radius:12px;
+  padding:8px 14px;
+  margin-top:12px;
+  color:var(--white);
+  font-size:13px;
+  font-weight:700;
+}
+.total-badge span{color:var(--accent-yellow);font-size:18px;}
+
+/* 期限バナー */
+.deadline-banner{
+  background:linear-gradient(135deg,var(--accent-red),#c0392b);
+  border-radius:14px;
+  padding:12px 16px;
+  margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  box-shadow:0 4px 16px rgba(224,58,58,0.3);
+}
+.deadline-banner .icon{font-size:24px;}
+.deadline-banner .text{color:var(--white);}
+.deadline-banner .text strong{font-size:14px;font-weight:900;display:block;}
+.deadline-banner .text span{font-size:11px;opacity:0.9;}
+
+/* Progress */
+.progress-wrap{
+  background:var(--white);
+  border-radius:16px;
+  padding:16px 20px;
+  margin-bottom:16px;
+  box-shadow:var(--shadow);
+}
+.progress-label{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:8px;
+  font-size:12px;
+  color:var(--text-mid);
+  font-weight:700;
+}
+.progress-label strong{color:var(--blue-dark);font-size:14px;}
+.progress-bar-bg{
+  background:var(--blue-pale);
+  border-radius:8px;
+  height:10px;
+  overflow:hidden;
+}
+.progress-bar-fill{
+  background:linear-gradient(90deg,var(--blue-light),var(--blue-mid));
+  height:100%;
+  border-radius:8px;
+  transition:width 0.5s ease;
+  width:0%;
+}
+
+/* 計算カード */
+.calc-card{
+  background:var(--white);
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:var(--shadow);
+  border-left:4px solid var(--blue-mid);
+}
+.calc-title{font-size:13px;font-weight:700;color:var(--blue-dark);margin-bottom:10px;}
+.calc-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:6px 0;
+  border-bottom:1px solid var(--blue-pale);
+  font-size:12px;
+}
+.calc-row:last-child{border-bottom:none;}
+.calc-row .label{color:var(--text-mid);}
+.calc-row .val{font-weight:700;color:var(--blue-dark);}
+.calc-row .val.red{color:var(--accent-red);}
+.calc-row .val.green{color:var(--accent-green);}
+.calc-total{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:10px;
+  padding:10px 12px;
+  background:var(--blue-pale);
+  border-radius:10px;
+}
+.calc-total .label{font-size:13px;font-weight:700;color:var(--blue-dark);}
+.calc-total .val{font-size:18px;font-weight:900;color:var(--accent-red);}
+
+/* Section */
+.section{
+  background:var(--white);
+  border-radius:20px;
+  margin-bottom:16px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.section-header{
+  padding:14px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  cursor:pointer;
+  user-select:none;
+}
+.section-header-left{display:flex;align-items:center;gap:10px;}
+.section-icon{
+  width:36px;height:36px;
+  border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;flex-shrink:0;
+}
+.section-title{font-size:13px;font-weight:700;color:var(--blue-dark);line-height:1.3;}
+.section-amount{
+  font-size:11px;color:var(--accent-yellow);font-weight:700;
+  background:var(--blue-dark);padding:2px 8px;border-radius:10px;
+  margin-top:2px;display:inline-block;
+}
+.section-chevron{font-size:12px;color:var(--text-light);transition:transform 0.3s;flex-shrink:0;}
+.section.collapsed .section-chevron{transform:rotate(-90deg);}
+.section-body{padding:0 14px 14px;}
+.section.collapsed .section-body{display:none;}
+
+/* Check item */
+.check-item{
+  background:var(--blue-ultra);
+  border:1.5px solid var(--border);
+  border-radius:14px;
+  padding:12px 14px;
+  margin-bottom:8px;
+  transition:all 0.2s;
+  cursor:pointer;
+}
+.check-item:hover{border-color:var(--blue-light);background:var(--blue-pale);}
+.check-item.done{background:#f0fff4;border-color:#a8ddb8;opacity:0.85;}
+
+.item-top{display:flex;align-items:flex-start;gap:10px;}
+.checkbox{
+  width:22px;height:22px;border-radius:6px;
+  border:2px solid var(--blue-light);background:var(--white);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all 0.2s;margin-top:1px;
+}
+.check-item.done .checkbox{background:var(--accent-green);border-color:var(--accent-green);}
+.checkbox::after{content:'✓';color:var(--white);font-size:13px;font-weight:900;display:none;}
+.check-item.done .checkbox::after{display:block;}
+
+.item-content{flex:1;min-width:0;}
+.item-label{font-size:13px;font-weight:700;color:var(--text-dark);line-height:1.4;margin-bottom:2px;}
+.check-item.done .item-label{text-decoration:line-through;color:var(--text-light);}
+.item-detail{font-size:11px;color:var(--text-mid);line-height:1.4;}
+
+.item-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
+.entry-badge{
+  background:var(--accent-red);color:var(--white);
+  font-size:9px;font-weight:700;padding:2px 7px;border-radius:8px;white-space:nowrap;
+}
+.amount-badge{
+  background:var(--blue-pale);color:var(--blue-dark);
+  font-size:11px;font-weight:700;padding:2px 8px;border-radius:8px;
+  white-space:nowrap;border:1px solid var(--border);
+}
+.check-item.done .amount-badge{background:#e0f5e9;border-color:#a8ddb8;color:var(--accent-green);}
+
+/* URL button */
+.url-btn{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--blue-mid);color:var(--white) !important;
+  font-size:10px;font-weight:700;padding:4px 10px;border-radius:8px;
+  text-decoration:none;margin-top:6px;transition:background 0.2s;white-space:nowrap;
+}
+.url-btn:hover{background:var(--blue-dark);}
+.url-btn::before{content:'🔗 ';}
+
+/* Memo */
+.section-memo{
+  background:var(--blue-ultra);border:1.5px dashed var(--border);
+  border-radius:12px;padding:12px;margin-top:4px;
+}
+.section-memo-label{font-size:11px;font-weight:700;color:var(--blue-mid);margin-bottom:6px;}
+.memo-textarea{
+  width:100%;background:var(--white);border:1.5px solid var(--border);
+  border-radius:10px;padding:8px 10px;font-size:12px;
+  font-family:'Noto Sans JP',sans-serif;color:var(--text-dark);
+  resize:vertical;min-height:56px;line-height:1.6;transition:border-color 0.2s;
+}
+.memo-textarea:focus{outline:none;border-color:var(--blue-light);box-shadow:0 0 0 3px rgba(91,155,213,0.15);}
+.memo-textarea::placeholder{color:var(--text-light);}
+
+/* Warning */
+.warning-box{
+  background:#fff5f5;border:1.5px solid #ffcdd2;
+  border-radius:14px;padding:14px 16px;margin-bottom:16px;
+}
+.warning-title{color:var(--accent-red);font-size:13px;font-weight:700;margin-bottom:10px;}
+.warning-item{
+  display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;
+  font-size:12px;color:var(--text-dark);line-height:1.5;
+}
+.warning-item::before{content:'⚠️';flex-shrink:0;font-size:11px;}
+
+/* Tips */
+.tips-box{
+  background:var(--blue-pale);border:1.5px solid var(--border);
+  border-radius:14px;padding:14px 16px;margin-bottom:16px;
+}
+.tips-title{color:var(--blue-dark);font-size:13px;font-weight:700;margin-bottom:10px;}
+.tips-item{
+  display:flex;align-items:flex-start;gap:8px;margin-bottom:7px;
+  font-size:12px;color:var(--text-dark);line-height:1.5;
+}
+.tips-item::before{content:'💡';flex-shrink:0;font-size:11px;}
+
+/* DM box */
+.dm-box{
+  background:var(--blue-pale);border:1.5px solid var(--border);
+  border-radius:14px;padding:14px 16px;margin-bottom:16px;
+}
+.dm-title{color:var(--blue-dark);font-size:13px;font-weight:700;margin-bottom:6px;}
+.dm-text{font-size:12px;color:var(--text-dark);line-height:1.6;}
+
+/* Reset */
+.reset-btn{
+  display:block;width:100%;padding:12px;background:var(--white);
+  border:2px solid var(--border);border-radius:14px;
+  font-family:'Noto Sans JP',sans-serif;font-size:13px;font-weight:700;
+  color:var(--text-mid);cursor:pointer;transition:all 0.2s;text-align:center;margin-top:8px;
+}
+.reset-btn:hover{border-color:var(--accent-red);color:var(--accent-red);}
+.save-notice{text-align:center;font-size:11px;color:var(--text-light);padding:8px;}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="header-badge">6/16まで限定コンボ</div>
+  <h1>オムツほぼ半額<br>失敗しないチェックシート👶</h1>
+  <p>手順通りにやれば確実にお得！<br>チェックとメモはブラウザに自動保存されます</p>
+  <div class="total-badge">1,538円→実質 <span>約827円！</span></div>
+</div>
+
+<!-- 期限バナー -->
+<div class="deadline-banner">
+  <div class="icon">⏰</div>
+  <div class="text">
+    <strong>チラシ価格は6/16（月）まで！</strong>
+    <span>このコンボは実質6日間限定🔥急いでね！</span>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="progress-wrap">
+  <div class="progress-label">
+    <span>完了したステップ</span>
+    <strong id="progress-text">0 / 0</strong>
+  </div>
+  <div class="progress-bar-bg">
+    <div class="progress-bar-fill" id="progress-bar"></div>
+  </div>
+</div>
+
+<!-- 計算カード -->
+<div class="calc-card">
+  <div class="calc-title">💰 実質827円になる仕組み（1パックあたり）</div>
+  <div class="calc-row">
+    <span class="label">通常価格</span>
+    <span class="val">1,738円（税込）</span>
+  </div>
+  <div class="calc-row">
+    <span class="label">チラシ価格 <a href="https://www.nishimatsuya.com/flier/chirashi_0604_0616/" target="_blank" style="font-size:10px;color:var(--blue-mid);font-weight:700;text-decoration:none;background:var(--blue-pale);padding:2px 6px;border-radius:6px;margin-left:4px;">📄チラシを見る</a></span>
+    <span class="val red">1,538円（税込）</span>
+  </div>
+  <div class="calc-row">
+    <span class="label">Visa割30%還元</span>
+    <span class="val green">約461円戻る</span>
+  </div>
+  <div class="calc-row">
+    <span class="label">P&G申請（2パック分÷2）</span>
+    <span class="val green">500pt÷2＝250pt戻る</span>
+  </div>
+  <div class="calc-total">
+    <span class="label">実質価格</span>
+    <span class="val">約827円！</span>
+  </div>
+</div>
+
+<!-- STEP 1: 事前準備 -->
+<div class="section" id="sec-prep">
+  <div class="section-header" onclick="toggleSection('sec-prep')">
+    <div class="section-header-left">
+      <div class="section-icon" style="background:#e8f3fc;">📱</div>
+      <div>
+        <div class="section-title">STEP1. 事前準備</div>
+        <div class="section-amount">買いに行く前にやること</div>
+      </div>
+    </div>
+    <span class="section-chevron">▼</span>
+  </div>
+  <div class="section-body">
+    <div class="check-item" onclick="toggleCheck(this)" data-key="prep1">
+      <div class="item-top">
+        <div class="checkbox"></div>
+        <div class="item-content">
+          <div class="item-label">Visa割アカウントに三井住友系Visaカードを登録</div>
+          <div class="item-detail">1人最大5枚まで登録可能　登録解除すると特典なしになるから登録したままで！</div>
+          <a class="url-btn" href="https://www.visa.co.jp/about-visa/promotions/visapromo26jun-apay/merchant.html" target="_blank" onclick="event.stopPropagation()">ここから登録</a>
+        </div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)" data-key="prep2">
+      <div class="item-top">
+        <div class="checkbox"></div>
+        <div class="item-content">
+          <div class="item-label">三井住友キャンペーンにエントリー</div>
+          <div class="item-detail">30%還元は要エントリー！忘れると10%還元になるから注意</div>
+          <a class="url-btn" href="https://www.smbc-card.com/mem/cardinfo/26/cardinfo7224638.jsp" target="_blank" onclick="event.stopPropagation()">ここからエントリー</a>
+        </div>
+        <div class="item-right">
+          <span class="entry-badge">要エントリー</span>
+        </div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)" data-key="prep3">
+      <div class="item-top">
+        <div class="checkbox"></div>
+        <div class="item-content">
+          <div class="item-label">登録したクレカをiPhoneのWalletへ追加</div>
+          <div class="item-detail">ApplePayのタッチ決済が対象　Androidは不可⚠️</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-memo">
+      <div class="section-memo-label">📝 メモ</div>
+      <textarea class="memo-textarea" data-key="memo-prep" placeholder="エントリー済みの確認など…"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 2: 購入 -->
+<div class="section" id="sec-buy">
+  <div class="section-header" onclick="toggleSection('sec-buy')">
+    <div class="section-header-left">
+      <div class="section-icon" style="background:#fff3e0;">🛒</div>
+      <div>
+        <div class="section-title">STEP2. 西松屋で購入</div>
+        <div class="section-amount">1,538円×2パック</div>
+      </div>
+    </div>
+    <span class="section-chevron">▼</span>
+  </div>
+  <div class="section-body">
+    <div class="check-item" onclick="toggleCheck(this)" data-key="buy1">
+      <div class="item-top">
+        <div class="checkbox"></div>
+        <div class="item-content">
+          <div class="item-label">パンパース（1,538円税込）を2パック買う</div>
+          <div class="item-detail">2パック購入で合計3,076円以上→P&Gキャンペーン対象に！</div>
+        </div>
+        <div class="item-right">
+          <span class="amount-badge">合計3,076円</span>
+        </div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)" data-key="buy2">
+      <div class="item-top">
+        <div class="checkbox"></div>
+        <div class="item-content">
+          <div class="item-label">レジで「クレカで」と伝える</div>
+          <div class="item-detail">「タッチ決済で」はNG⚠️　QuickPayやApplePayと勘違いされるから注意！</div>
+        </div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)" data-key="buy3">
+      <div class="item-top">
+        <div class="checkbox"></div>
+        <div class="item-content">
+          <div class="item-label">三井住友クレカ（Visa）でスマホタッチ決済</div>
+          <div class="item-detail">iPhoneをかざしてApplePayで支払い完了</div>
+        </div>
+        <div class="item-right">
+          <span class="amount-badge">30%還元</span>
+        </div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)" data-key="buy4">
+      <div class="item-top">
+        <div class="checkbox"></div>
+        <div class="item-content">
+          <div class="item-label">レシートを受け取る</div>
+          <div class="item-detail">P&G申請に必要！必ず受け取ってね</div>
+        </div>
+      </div>
+    </div>
+    <div class="section-memo">
+      <div class="section-memo-label">📝 メモ</div>
+      <textarea class="memo-textarea" data-key="memo-buy" placeholder="購入日・購入金額など…"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 3: P&G申請 -->
+<div class="section" id="sec-pg">
+  <div class="section-header" onclick="toggleSection('sec-pg')">
+    <div class="section-header-left">
+      <div class="section-icon" style="background:#e8f7ee;">🧾</div>
+      <div>
+        <div class="section-title">STEP3. P&Gレシート申請</div>
+        <div class="section-amount">500pt還元</div>
+      </div>
+    </div>
+    <span class="section-chevron">▼</span>
+  </div>
+  <div class="section-body">
+
+    <div class="check-item" onclick="toggleCheck(this)" data-key="pg2">
+      <div class="item-top">
+        <div class="checkbox"></div>
+        <div class="item-content">
+          <div class="item-label">購入レシートを申請する</div>
+          <div class="item-detail">応募期間：6/1〜8/14まで　購入後早めに申請しよう</div>
+          <a class="url-btn" href="https://lsp-campaign.com/pg-2605/n-1/lp.go" target="_blank" onclick="event.stopPropagation()">ここから申請</a>
+        </div>
+        <div class="item-right">
+          <span class="amount-badge">500pt</span>
+        </div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)" data-key="pg3">
+      <div class="item-top">
+        <div class="checkbox"></div>
+        <div class="item-content">
+          <div class="item-label">3つのLINEアカウントをブロックせずに待つ</div>
+          <div class="item-detail">「P&G」「LINEで応募」「LINEで応募 お知らせ」　9月上旬に受取案内が届く</div>
+        </div>
+      </div>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this)" data-key="pg4">
+      <div class="item-top">
+        <div class="checkbox"></div>
+        <div class="item-content">
+          <div class="item-label">9月上旬にPayPayポイントを受け取る</div>
+          <div class="item-detail">「LINEで応募 お知らせ」から受取案内が届いたら忘れずに受け取って</div>
+        </div>
+        <div class="item-right">
+          <span class="amount-badge">500pt受取</span>
+        </div>
+      </div>
+    </div>
+    <div class="section-memo">
+      <div class="section-memo-label">📝 メモ</div>
+      <textarea class="memo-textarea" data-key="memo-pg" placeholder="申請日・受取期限など…"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- 注意点 -->
+<div class="warning-box">
+  <div class="warning-title">⚠️ 絶対に忘れないで！</div>
+  <div class="warning-item">三井住友30%還元は要エントリー！忘れると10%還元になるよ</div>
+  <div class="warning-item">レジでは「クレカで」と伝えて！「タッチ決済で」はNG</div>
+  <div class="warning-item">レシートは必ず受け取って！P&G申請に必要</div>
+  <div class="warning-item">P&GのLINEアカウント3つをブロックしないで！ポイントが受け取れなくなるよ</div>
+  <div class="warning-item">チラシ価格は6/16まで！このコンボは今週中に！</div>
+</div>
+
+<!-- コツ -->
+<div class="tips-box">
+  <div class="tips-title">💡 お得に使うコツ</div>
+  <div class="tips-item">西松屋全商品が30%還元対象！オムツと一緒に夏物や日用品もまとめ買いも可能◎　対象クレカ1枚につき5,000円まで30%還元</div>
+  <div class="tips-item">Visa割のカードは5枚まで登録できるから上限5,000円分まで還元を最大化できる</div>
+  <div class="tips-item">その他のVisaブランドのクレカでも10%還元は受けられるよ◎</div>
+</div>
+
+<!-- DM -->
+<div class="dm-box">
+  <div class="dm-title">💬 わからないことはDMへ</div>
+  <div class="dm-text">手順でわからないことがあればInstagramのDMで気軽に質問してください😊<br>rain.moneylife<br><a href="https://www.instagram.com/rain.moneylife/" target="_blank" style="display:inline-flex;align-items:center;gap:4px;background:var(--blue-mid);color:white;font-size:11px;font-weight:700;padding:5px 12px;border-radius:8px;text-decoration:none;margin-top:8px;">📩 質問はここから</a></div>
+</div>
+
+<button class="reset-btn" onclick="resetAll()">🔄 チェックをリセットする</button>
+<p class="save-notice">✅ チェック・メモはブラウザに自動保存されます<br>by rain.moneylife</p>
+
+<script>
+const STORAGE_KEY='omutsu_checklist_v1';
+function getState(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}');}catch{return{};}}
+function saveState(s){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(s));}catch{}}
+
+function toggleSection(id){
+  const sec=document.getElementById(id);
+  sec.classList.toggle('collapsed');
+  const s=getState();
+  s['section_'+id]=sec.classList.contains('collapsed');
+  saveState(s);
+}
+
+function toggleCheck(el){
+  el.classList.toggle('done');
+  const s=getState();
+  s[el.dataset.key]=el.classList.contains('done');
+  saveState(s);
+  updateProgress();
+}
+
+function updateProgress(){
+  const all=document.querySelectorAll('.check-item');
+  const done=document.querySelectorAll('.check-item.done');
+  const pct=all.length>0?Math.round(done.length/all.length*100):0;
+  document.getElementById('progress-text').textContent=done.length+' / '+all.length;
+  document.getElementById('progress-bar').style.width=pct+'%';
+}
+
+function resetAll(){
+  if(!confirm('チェックをすべてリセットしますか？\n（メモは残ります）'))return;
+  const s=getState();
+  document.querySelectorAll('.check-item').forEach(el=>{
+    el.classList.remove('done');
+    s[el.dataset.key]=false;
+  });
+  saveState(s);
+  updateProgress();
+}
+
+function restoreState(){
+  const s=getState();
+  document.querySelectorAll('.check-item').forEach(el=>{
+    if(s[el.dataset.key])el.classList.add('done');
+  });
+  document.querySelectorAll('.section').forEach(sec=>{
+    if(s['section_'+sec.id])sec.classList.add('collapsed');
+  });
+  document.querySelectorAll('.memo-textarea').forEach(el=>{
+    if(s[el.dataset.key])el.value=s[el.dataset.key];
+    el.addEventListener('input',()=>{const s=getState();s[el.dataset.key]=el.value;saveState(s);});
+    el.addEventListener('click',e=>e.stopPropagation());
+  });
+  updateProgress();
+}
+
+restoreState();
+</script>
+</body>
+</html>
